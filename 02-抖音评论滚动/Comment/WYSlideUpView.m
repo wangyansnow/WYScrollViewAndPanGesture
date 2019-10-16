@@ -82,7 +82,7 @@
         if (self.scrollView) { // 手势落在scrollView上
             CGFloat offsetY = self.scrollView.contentOffset.y; // 负数向下滑动
 //            NSLog(@"scrollY = %@", @(offsetY));
-            if (offsetY <= 0) {
+            if (offsetY <= 0 && translation.y > 0) {
                 self.scrollView.contentOffset = CGPointZero;
                 [UIView animateWithDuration:0.25 animations:^{
                     self.scrollView.panGestureRecognizer.enabled = NO;
@@ -101,7 +101,7 @@
         CGFloat y = self.contentView.frame.origin.y;
         
         CGPoint velocity = [gesture velocityInView:gesture.view];
-        NSLog(@"velocity = %@", NSStringFromCGPoint(velocity));
+//        NSLog(@"velocity = %@", NSStringFromCGPoint(velocity));
         
         if (y - minY > h * 0.5 || ((self.scrollView && self.scrollView.contentOffset.y == 0) && velocity.y > CGRectGetHeight(self.bounds) * 0.5)) { // dismiss
             [self dismiss:nil];
