@@ -88,6 +88,8 @@
                     self.scrollView.panGestureRecognizer.enabled = NO;
                 }];
                 [self addY:translation.y];
+            } else if(translation.y < 0) {
+                [self addY:translation.y];
             }
         } else {
             CGFloat y = translation.y; // 正数 --> 向下移动
