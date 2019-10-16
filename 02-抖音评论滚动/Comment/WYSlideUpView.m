@@ -36,14 +36,7 @@
 
 - (void)showInView:(UIView *)view completion:(dispatch_block_t)completion {
     [view addSubview:self];
-    
-    [UIView animateWithDuration:0.25 animations:^{
-        CGRect contentFrame = self.contentView.frame;
-        contentFrame.origin.y = CGRectGetHeight(self.bounds) - CGRectGetHeight(contentFrame);
-        self.contentView.frame = contentFrame;
-    } completion:^(BOOL finished) {
-        !completion ?: completion();
-    }];
+    [self restoreContentView:completion];
 }
 - (void)dismiss:(nullable dispatch_block_t)completion {
     [UIView animateWithDuration:0.25 animations:^{
@@ -62,6 +55,10 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction:)];
     tapGesture.delegate = self;
     [self addGestureRecognizer:tapGesture];
+    
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureAction:)];
+    panGesture.delegate = self;
+    [self addGestureRecognizer:panGesture];
 }
 
 - (void)tapGestureAction:(UITapGestureRecognizer *)gesture {
@@ -73,6 +70,55 @@
         NSLog(@"点击了空白区域");
         [self dismiss:nil];
     }
+}
+
+- (void)panGestureAction:(UIPanGestureRecognizer *)gesture {
+    CGPoint translation = [gesture translationInView:gesture.view];
+    NSLog(@"translation = %@", NSStringFromCGPoint(translation));
+    
+    UIGestureRecognizerState state = gesture.state;
+    if (state == UIGestureRecognizerStateBegan) {
+        NSLog(@"开始");
+    } else if (state == UIGestureRecognizerStateChanged) {
+        CGFloat y = translation.y; // 正数 --> 向下移动
+        [self addY:y];
+        
+    } else if (state == UIGestureRecognizerStateEnded) {
+        NSLog(@"结束");
+        
+        CGRect contentFrame = self.contentView.frame;
+        CGFloat h = CGRectGetHeight(contentFrame);
+        CGFloat minY = CGRectGetHeight(self.bounds) - h;
+        CGFloat y = self.contentView.frame.origin.y;
+        
+        if (y - minY > h * 0.5) { // dismiss
+            [self dismiss:nil];
+        } else { // 恢复
+            [self restoreContentView:nil];
+        }
+    }
+    
+    [gesture setTranslation:CGPointZero inView:gesture.view];
+}
+
+- (void)addY:(CGFloat)changeY {
+    
+    CGRect contentFrame = self.contentView.frame;
+    CGFloat minY = CGRectGetHeight(self.bounds) - CGRectGetHeight(contentFrame);
+    CGFloat y = contentFrame.origin.y + changeY;
+    if (y < minY) return;
+    contentFrame.origin.y = y;
+    self.contentView.frame = contentFrame;
+}
+
+- (void)restoreContentView:(nullable dispatch_block_t)completion {
+    [UIView animateWithDuration:0.25 animations:^{
+        CGRect contentFrame = self.contentView.frame;
+        contentFrame.origin.y = CGRectGetHeight(self.bounds) - CGRectGetHeight(contentFrame);
+        self.contentView.frame = contentFrame;
+    } completion:^(BOOL finished) {
+        !completion ?: completion();
+    }];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
