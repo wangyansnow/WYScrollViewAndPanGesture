@@ -13,6 +13,8 @@
 		E3568B8F2357495600AF79FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E3568B8E2357495600AF79FE /* Assets.xcassets */; };
 		E3568B922357495600AF79FE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E3568B902357495600AF79FE /* LaunchScreen.storyboard */; };
 		E3568B952357495600AF79FE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E3568B942357495600AF79FE /* main.m */; };
+		E3568B9E2357498600AF79FE /* WYCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = E3568B9D2357498600AF79FE /* WYCommentView.m */; };
+		E3568BA22357533900AF79FE /* WYSlideUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = E3568BA12357533900AF79FE /* WYSlideUpView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,11 @@
 		E3568B912357495600AF79FE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E3568B932357495600AF79FE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E3568B942357495600AF79FE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E3568B9C2357498600AF79FE /* WYCommentView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WYCommentView.h; sourceTree = "<group>"; };
+		E3568B9D2357498600AF79FE /* WYCommentView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WYCommentView.m; sourceTree = "<group>"; };
+		E3568B9F23574D6500AF79FE /* CommonMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommonMacro.h; sourceTree = "<group>"; };
+		E3568BA02357533900AF79FE /* WYSlideUpView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WYSlideUpView.h; sourceTree = "<group>"; };
+		E3568BA12357533900AF79FE /* WYSlideUpView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WYSlideUpView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +65,7 @@
 		E3568B842357495400AF79FE /* 02-抖音评论滚动 */ = {
 			isa = PBXGroup;
 			children = (
+				E3568B9B2357497700AF79FE /* Comment */,
 				E3568B852357495400AF79FE /* AppDelegate.h */,
 				E3568B862357495400AF79FE /* AppDelegate.m */,
 				E3568B882357495400AF79FE /* ViewController.h */,
@@ -69,6 +77,18 @@
 				E3568B942357495600AF79FE /* main.m */,
 			);
 			path = "02-抖音评论滚动";
+			sourceTree = "<group>";
+		};
+		E3568B9B2357497700AF79FE /* Comment */ = {
+			isa = PBXGroup;
+			children = (
+				E3568B9C2357498600AF79FE /* WYCommentView.h */,
+				E3568B9D2357498600AF79FE /* WYCommentView.m */,
+				E3568B9F23574D6500AF79FE /* CommonMacro.h */,
+				E3568BA02357533900AF79FE /* WYSlideUpView.h */,
+				E3568BA12357533900AF79FE /* WYSlideUpView.m */,
+			);
+			path = Comment;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,9 +161,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E3568B9E2357498600AF79FE /* WYCommentView.m in Sources */,
 				E3568B8A2357495400AF79FE /* ViewController.m in Sources */,
 				E3568B952357495600AF79FE /* main.m in Sources */,
 				E3568B872357495400AF79FE /* AppDelegate.m in Sources */,
+				E3568BA22357533900AF79FE /* WYSlideUpView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +310,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CTXC2MCNP9;
 				INFOPLIST_FILE = "02-抖音评论滚动/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -305,6 +328,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CTXC2MCNP9;
 				INFOPLIST_FILE = "02-抖音评论滚动/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

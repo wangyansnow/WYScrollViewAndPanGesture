@@ -7,6 +7,9 @@
 //
 
 #import "ViewController.h"
+#import "WYCommentView.h"
+#import "CommonMacro.h"
+#import "WYSlideUpView.h"
 
 @interface ViewController ()
 
@@ -16,7 +19,23 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+
+    [self setupUI];
+}
+
+- (void)setupUI {
+//    CGFloat h = 400;
+//    WYCommentView *commentView = [[WYCommentView alloc] initWithFrame:CGRectMake(0, SCREEN_H - h, SCREEN_W, h)];
+//    [self.view addSubview:commentView];
+}
+- (IBAction)showBtnClick:(UIButton *)sender {
+    CGFloat h = 400;
+    WYCommentView *commentView = [[WYCommentView alloc] initWithFrame:CGRectMake(0, SCREEN_H - h, SCREEN_W, h)];
+    WYSlideUpView *slideUpView = [[WYSlideUpView alloc] initWithFrame:self.view.bounds contentView:commentView];
+    
+    [slideUpView showInView:self.view completion:^{
+        NSLog(@"%s", __func__);
+    }];
 }
 
 
