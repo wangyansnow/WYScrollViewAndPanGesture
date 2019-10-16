@@ -19,15 +19,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    [self setupUI];
 }
 
-- (void)setupUI {
-//    CGFloat h = 400;
-//    WYCommentView *commentView = [[WYCommentView alloc] initWithFrame:CGRectMake(0, SCREEN_H - h, SCREEN_W, h)];
-//    [self.view addSubview:commentView];
-}
 - (IBAction)showBtnClick:(UIButton *)sender {
     CGFloat h = 400;
     WYCommentView *commentView = [[WYCommentView alloc] initWithFrame:CGRectMake(0, SCREEN_H - h, SCREEN_W, h)];

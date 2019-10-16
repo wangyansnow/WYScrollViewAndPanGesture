@@ -12,14 +12,15 @@
 @interface WYSlideUpView ()<UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak) UIView *contentView;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
+
+@property (nonatomic, weak) UIScrollView *scrollView;
 
 @end
 
 @implementation WYSlideUpView
 
-+ (instancetype)slideUpWithFrame:(CGRect)frame contentView:(UIView *)contentView {
-    return [[self alloc] initWithFrame:frame contentView:contentView];
-}
 - (instancetype)initWithFrame:(CGRect)frame contentView:(UIView *)contentView {
     if (self = [super initWithFrame:frame]) {
         CGRect contentFrame = contentView.frame;
@@ -34,7 +35,7 @@
     return self;
 }
 
-- (void)showInView:(UIView *)view completion:(dispatch_block_t)completion {
+- (void)showInView:(UIView *)view completion:(nullable dispatch_block_t)completion {
     [view addSubview:self];
     [self restoreContentView:completion];
 }
@@ -53,49 +54,63 @@
 #pragma mark - private
 - (void)addGesture {
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction:)];
+    self.tapGesture = tapGesture;
     tapGesture.delegate = self;
     [self addGestureRecognizer:tapGesture];
     
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureAction:)];
+    self.panGesture = panGesture;
     panGesture.delegate = self;
     [self addGestureRecognizer:panGesture];
 }
 
 - (void)tapGestureAction:(UITapGestureRecognizer *)gesture {
     CGPoint location = [gesture locationInView:gesture.view];
-    NSLog(@"location = %@", NSStringFromCGPoint(location));
-    if (CGRectContainsPoint(self.contentView.frame, location)) {
-        NSLog(@"点击了contentView");
-    } else {
-        NSLog(@"点击了空白区域");
+//    NSLog(@"location = %@", NSStringFromCGPoint(location));
+    if (!CGRectContainsPoint(self.contentView.frame, location)) {
         [self dismiss:nil];
     }
 }
 
 - (void)panGestureAction:(UIPanGestureRecognizer *)gesture {
     CGPoint translation = [gesture translationInView:gesture.view];
-    NSLog(@"translation = %@", NSStringFromCGPoint(translation));
     
     UIGestureRecognizerState state = gesture.state;
     if (state == UIGestureRecognizerStateBegan) {
-        NSLog(@"开始");
     } else if (state == UIGestureRecognizerStateChanged) {
-        CGFloat y = translation.y; // 正数 --> 向下移动
-        [self addY:y];
         
+        if (self.scrollView) { // 手势落在scrollView上
+            CGFloat offsetY = self.scrollView.contentOffset.y; // 负数向下滑动
+//            NSLog(@"scrollY = %@", @(offsetY));
+            if (offsetY <= 0) {
+                self.scrollView.contentOffset = CGPointZero;
+                [UIView animateWithDuration:0.25 animations:^{
+                    self.scrollView.panGestureRecognizer.enabled = NO;
+                }];
+                [self addY:translation.y];
+            }
+        } else {
+            CGFloat y = translation.y; // 正数 --> 向下移动
+            [self addY:y];
+        }
     } else if (state == UIGestureRecognizerStateEnded) {
-        NSLog(@"结束");
         
         CGRect contentFrame = self.contentView.frame;
         CGFloat h = CGRectGetHeight(contentFrame);
         CGFloat minY = CGRectGetHeight(self.bounds) - h;
         CGFloat y = self.contentView.frame.origin.y;
         
-        if (y - minY > h * 0.5) { // dismiss
+        CGPoint velocity = [gesture velocityInView:gesture.view];
+        NSLog(@"velocity = %@", NSStringFromCGPoint(velocity));
+        
+        if (y - minY > h * 0.5 || ((self.scrollView && self.scrollView.contentOffset.y == 0) && velocity.y > CGRectGetHeight(self.bounds) * 0.5)) { // dismiss
             [self dismiss:nil];
         } else { // 恢复
             [self restoreContentView:nil];
         }
+        
+        self.scrollView.panGestureRecognizer.enabled = YES;
+        self.scrollView = nil;
     }
     
     [gesture setTranslation:CGPointZero inView:gesture.view];
@@ -122,5 +137,35 @@
 }
 
 #pragma mark - UIGestureRecognizerDelegate
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer == self.panGesture) {
+        return CGRectContainsPoint(self.contentView.frame, [gestureRecognizer locationInView:gestureRecognizer.view]);
+    }
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if (gestureRecognizer != self.panGesture) return YES;
+    
+    UIView *touchView = touch.view;
+    while (touchView) {
+        if ([touchView isKindOfClass:[UIScrollView class]]) {
+            self.scrollView = (UIScrollView *)touchView;
+            break;
+        }
+        
+        touchView = (UIView *)[touchView nextResponder];
+    }
+    
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    
+    if (self.panGesture == gestureRecognizer && [otherGestureRecognizer.view isKindOfClass:[UIScrollView class]]) {
+        return YES;
+    }
+    return NO;
+}
 
 @end

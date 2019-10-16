@@ -12,10 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WYSlideUpView : UIView
 
-+ (instancetype)slideUpWithFrame:(CGRect)frame contentView:(UIView *)contentView;
 - (instancetype)initWithFrame:(CGRect)frame contentView:(UIView *)contentView;
 
-- (void)showInView:(UIView *)view completion:(dispatch_block_t)completion;
+- (void)showInView:(UIView *)view completion:(nullable dispatch_block_t)completion;
 - (void)dismiss:(nullable dispatch_block_t)completion;
 
 @end
