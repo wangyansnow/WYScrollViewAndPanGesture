@@ -149,9 +149,10 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     if (gestureRecognizer != self.panGesture) return YES;
     
+    Class cls = NSClassFromString(@"UITableViewWrapperView");
     UIView *touchView = touch.view;
     while (touchView) {
-        if ([touchView isKindOfClass:[UIScrollView class]]) {
+        if (![touchView isKindOfClass:cls] && [touchView isKindOfClass:[UIScrollView class]]) {
             self.scrollView = (UIScrollView *)touchView;
             break;
         }
